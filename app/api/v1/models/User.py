@@ -11,7 +11,7 @@ class user:
     """User class contains user constructor and authentication methods"""
     def __init__(self):
         """Initialize User Object with an email and password"""
-         self.connection = initialize_database()
+        self.connection = initialize_database()
         self.cursor = self.connection.cursor()
 
     def validate_user_password(self, password):
@@ -26,7 +26,6 @@ class user:
         self.password = Bcrypt().generate_password_hash(password).decode()
         self.role = role
         self.created_at = datetime.now()
-        self.id = len(User.registered_users) + 1
 
         new_user = dict(
             email=self.email,
