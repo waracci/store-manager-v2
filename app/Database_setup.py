@@ -20,3 +20,4 @@ class Database_Setup_Config:
         self.database_connection.commit()
         self.cursor.close()
         self.database_connection.close()
+        

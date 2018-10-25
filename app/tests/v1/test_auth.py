@@ -173,3 +173,4 @@ class TestAuth(BaseTest):
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 400)
         self.assertEqual(user_login_result['message'], 'invalid email')
+        

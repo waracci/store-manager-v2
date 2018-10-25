@@ -67,4 +67,3 @@ class TestSales(BaseTest):
         fetch_sales_record = self.client().get('/api/v1/sales/{}'.format(result['sales']['id']),
                                   headers=dict(Authorization="Bearer {}".format(authentication_token)))
         self.assertEqual(fetch_sales_record.status_code, 200)
-
