@@ -18,6 +18,19 @@ class Database_Setup_Config:
             created_at  TIMESTAMP
         );''')
 
+        # Initialize Product Table
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS products(
+            id             SERIAL PRIMARY KEY,
+            name           VARCHAR(50)    UNIQUE NOT NULL,
+            description    VARCHAR(100)   NOT NULL,
+            quantity       VARCHAR(50)    NOT NULL,
+            category       VARCHAR(50) NOT NULL,
+            moq            VARCHAR(50) NOT NULL,
+            added_by       VARCHAR(50) NOT NULL,
+            date_created   VARCHAR(50),
+            modified_at    VARCHAR(50)
+        );''')
+
         self.database_connection.commit()
         self.cursor.close()
         self.database_connection.close()

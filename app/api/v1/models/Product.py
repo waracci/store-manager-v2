@@ -1,5 +1,7 @@
 """Product Model and data storage functions"""
 from datetime import datetime
+import  psycopg2.extras as extras 
+
 from ..utils.database_helper import initialize_database
 
 class Product():
@@ -39,10 +41,10 @@ class Product():
         existing_product = self.cursor.fetchone()
         if existing_product:
             self.connection.close()
-            return dict(message="Product already exists")
+            return dict(message="Product already exists", exists=True)
         save_product_sql = """INSERT INTO products 
                               (name, description, quantity, category, 
-                              moq, added_by, date_created, date_modified)
+                              moq, added_by, date_created, modified_at)
                               VALUES(%(product_name)s, %(product_description)s,
                               %(product_quantity)s, %(product_category)s, %(product_moq)s,
                                %(added_by)s, %(date_created)s, %(date_modified)s);"""
@@ -51,7 +53,6 @@ class Product():
         # Confirm Product saved successfully
         self.cursor.execute("SELECT * FROM products WHERE name = (%s);", (self.product_name,))
         new_saved_product = self.cursor.fetchone()
-        print(new_saved_product)
         self.connection.close()
         if not new_saved_product:
             return dict(message="Failed to save product", error=404)
@@ -59,25 +60,38 @@ class Product():
 
     def fetch_all_products(self):
         """Product Class method to fetch all products"""
-        
-        self.cursor.execute("SELECT * FROM products;")
-        products = self.cursor.fetchall()
+        custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
+        custom_cursor.execute("SELECT * FROM products;")
+        products = custom_cursor.fetchall()
         self.connection.close()
         if not products:
             return dict(error=401)
-        return products
+        all_products = []
+        for row in products:
+            all_products.append(dict(row))
+        return all_products
 
     def fetch_single_product(self, productId):
         """Product Class method to fetch a single product by ID"""
 
         self.cursor.execute("SELECT * FROM products WHERE id = (%s);", (productId,))
         existing_product = self.cursor.fetchone()
+        print(existing_product)
         self.connection.close()
         if not existing_product:
             return dict(error=401)
-        return existing_product
+        return dict(
+            id= existing_product[0],
+            name= existing_product[1], 
+            description= existing_product[2],
+            quantity= existing_product[3],
+            category= existing_product[4],
+            moq= existing_product[5],
+            added_by= existing_product[6],
+            date_created= existing_product[7],
+            modified_at= existing_product[8])
 
-    def put(self, productId, product_name, product_description, product_quantity,
+    def edit_product(self, productId, product_name, product_description, product_quantity,
        product_category, product_moq, added_by):
         """Class method to Edit Product details"""
         product_item_edit = dict(
@@ -98,10 +112,13 @@ class Product():
         self.connection.close()
         return 'success'
 
-    def delete(self, productId):
+    def delete_product(self, productId):
         """Class method to delete products from inventory"""
 
-        self.cursor.execute("DELETE * FROM products WHERE id = (%s)", (productId,))
+        del_product = self.cursor.execute("DELETE FROM products WHERE id = (%s)", (productId,))
+        print(del_product)
+        if not del_product:
+            return 'product id {} not found'.format(productId)
         self.connection.commit()
         self.connection.close()
         return 'success'

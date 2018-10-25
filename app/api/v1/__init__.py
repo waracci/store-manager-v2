@@ -2,7 +2,7 @@ from flask_restplus import Api
 from flask import Blueprint
 
 # Import all endpoints for all models
-# from .views.product import api as product_namespace
+from .views.product import api as product_namespace
 # from .views.sales import api as sales_namespace
 from .views.auth import api as auth_endpoint
 
@@ -22,5 +22,5 @@ api = Api(version2,
           authorizations=authorizations)
           
 api.add_namespace(auth_endpoint, path='/auth/')
-# api.add_namespace(product_namespace, path='/products')
+api.add_namespace(product_namespace, path='/products')
 # api.add_namespace(sales_namespace, path='/sales')
