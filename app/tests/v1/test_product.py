@@ -158,3 +158,4 @@ class TestProduct(BaseTest):
         fetch_single_product = self.client().get('/api/v2/products/{}'.format(result['product']['product_id']),
                                                 headers=dict(Authorization="Bearer {}".format(authentication_token)))
         self.assertEqual(fetch_single_product.status_code, 404)
+
