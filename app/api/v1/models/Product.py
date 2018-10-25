@@ -57,7 +57,7 @@ class Product():
             return dict(message="Failed to save product", error=404)
         return new_saved_product
 
-    def fetch_all_products(self, product_name):
+    def fetch_all_products(self):
         """Product Class method to fetch all products"""
         
         self.cursor.execute("SELECT * FROM products;")
