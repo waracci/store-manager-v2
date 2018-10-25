@@ -17,6 +17,7 @@ class Database_Setup_Config:
             role        VARCHAR(10)    NOT NULL,
             created_at  TIMESTAMP
         );''')
+
         self.database_connection.commit()
         self.cursor.close()
         self.database_connection.close()

@@ -9,10 +9,13 @@ class TestAuth(BaseTest):
 
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
-                            data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
-                                              "role": "admin"}))
+                            data=json.dumps({
+                                            "email": "u3ser@user.com",
+                                            "password": "pass",
+                                            "confirm_password": "pass",
+                                            "role": "admin"
+                                           }))
+
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
         self.assertEqual(user_reg_result['status'], 'ok')
@@ -40,8 +43,8 @@ class TestAuth(BaseTest):
                                              "confirm_password": "pass",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
-        self.assertEqual(user_registration.status_code, 401)
-        self.assertEqual(user_reg_result['message'], 'password cannot be empty')
+        self.assertEqual(user_registration.status_code, 400)
+        self.assertEqual(user_reg_result['message'], 'Enter password and role')
 
     def test_existing_user(self):
         """Test that same email can not register twice"""
@@ -63,8 +66,8 @@ class TestAuth(BaseTest):
                                              "confirm_password": "pass",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
-        self.assertEqual(user_registration.status_code, 202)
-        self.assertEqual(user_reg_result['message'], 'Email registered already')
+        self.assertEqual(user_registration.status_code, 400)
+        self.assertEqual(user_reg_result['message'], 'Email already exists, try a different one.')
 
     def test_login_user(self):
         """Test that a user can login successfully"""
@@ -77,7 +80,7 @@ class TestAuth(BaseTest):
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
-        self.assertEqual(user_reg_result['success'], 'ok')
+        self.assertEqual(user_reg_result['status'], 'ok')
 
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
@@ -98,7 +101,7 @@ class TestAuth(BaseTest):
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
-        self.assertEqual(user_reg_result['success'], 'ok')
+        self.assertEqual(user_reg_result['status'], 'ok')
 
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
@@ -106,7 +109,7 @@ class TestAuth(BaseTest):
                                       "password": "bad_pass"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 401)
-        self.assertEqual(user_login_result['message'], 'incorrect email or password')
+        self.assertEqual(user_login_result['message'], 'incorrect email or password, try again')
 
     def test_login_no_provided_password(self):
         """Test that password must be provided during login"""
@@ -119,15 +122,15 @@ class TestAuth(BaseTest):
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
-        self.assertEqual(user_reg_result['success'], 'ok')
+        self.assertEqual(user_reg_result['status'], 'ok')
 
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
                      data=json.dumps({"email": "user@user.com",
                                       "password": ""}))
         user_login_result = json.loads(user_login.data)
-        self.assertEqual(user_login.status_code, 400)
-        self.assertEqual(user_login_result['message'], 'no password provided')
+        self.assertEqual(user_login.status_code, 401)
+        self.assertEqual(user_login_result['message'], 'Email or password fields missing.')
 
     def test_login_unregistered_account(self):
         """Test that login is successful for registered accounts only"""
@@ -138,7 +141,7 @@ class TestAuth(BaseTest):
                                       "password": "pass"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 401)
-        self.assertEqual(user_login_result['message'], 'incorrect email or password')
+        self.assertEqual(user_login_result['message'], 'incorrect email or password, try again')
 
     def test_invalid_email_format_register(self):
         """Test that only accurate and correct formats allowed"""
@@ -148,10 +151,10 @@ class TestAuth(BaseTest):
                             data=json.dumps({"email": "user.user*com",
                                              "password": "pass",
                                              "confirm_password": "pass",
-                                              "role": "admin"}))
+                                             "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 400)
-        self.assertEqual(user_reg_result['message'], 'invalid email')
+        self.assertEqual(user_reg_result['message'], 'enter a valid email')
 
     def test_invalid_email_format_login(self):
         """Test that only accurate and correct formats allowed"""
@@ -164,7 +167,7 @@ class TestAuth(BaseTest):
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
-        self.assertEqual(user_reg_result['success'], 'ok')
+        self.assertEqual(user_reg_result['status'], 'ok')
 
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
@@ -172,4 +175,4 @@ class TestAuth(BaseTest):
                                       "password": "bad_pass"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 400)
-        self.assertEqual(user_login_result['message'], 'invalid email')
+        self.assertEqual(user_login_result['message'], 'Enter a valid email')

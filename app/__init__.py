@@ -8,8 +8,8 @@ from app.Database_setup import Database_Setup_Config
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False
-    # from .api.v1 import version1 as v1
-    # app.register_blueprint(v1)
+    from .api.v1 import version2 as v2
+    app.register_blueprint(v2)
 
     app.config.from_object(app_configuration[config_name])
     app.config.from_pyfile('config.py')

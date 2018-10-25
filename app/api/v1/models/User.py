@@ -7,7 +7,7 @@ import psycopg2
 from instance.config import secret_key, app_configuration
 from ..utils.database_helper import initialize_database
 
-class user:
+class User:
     """User class contains user constructor and authentication methods"""
     def __init__(self):
         """Initialize User Object with an email and password"""
@@ -38,7 +38,7 @@ class user:
         result = self.cursor.fetchone()
         if result:
             self.connection.close()
-            return dict(message="Email already exists, try a different one.", error=409)
+            return dict(message="Email already exists, try a different one.", error=400)
 
         save_user_sql = """INSERT INTO users(email, password, role, created_at)
                           VALUES(%(email)s, %(password)s, %(role)s, %(created_at)s);"""
@@ -51,7 +51,7 @@ class user:
         self.connection.close()
         if not success_register:
             return dict(message="Failed to register.", error=404)
-        return dict(message="Successful registration. Kindly login")
+        return dict(message="Successful registration. Kindly login", status="ok")
 
     
     def login(self, email, password):
@@ -64,7 +64,7 @@ class user:
         password_decode = Bcrypt().check_password_hash(existing_user[1], password)
         if password_decode:
             return existing_user[0]
-        return dict(message="Incorrect credentials", error=401)
+        return dict(error=401)
 
     def get_single_user(self, email):
         """Retrieve user details by email"""
@@ -81,7 +81,7 @@ class user:
 
         try:
             jwt_payload = {
-                'exp': datetime.now() + timedelta(days=1, seconds=5, options={'verify_iat': False}),
+                'exp': datetime.now() + timedelta(days=1, seconds=5),
                 'iat': datetime.now(),
                 'sub': email
             }
