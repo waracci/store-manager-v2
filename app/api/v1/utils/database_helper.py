@@ -11,4 +11,4 @@ def initialize_database():
 
     database_connection = psycopg2.connect(DATABASE_URI)
     return database_connection
-    
+
