@@ -34,3 +34,4 @@ app_configuration = {
 
 secret_key = Config.SECRET
 
+
