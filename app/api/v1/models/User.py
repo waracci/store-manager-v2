@@ -1,7 +1,7 @@
 """User model class"""
 import os
 from flask_bcrypt import Bcrypt
-import jwt
+from flask_jwt_extended import get_raw_jwt
 from datetime import datetime, timedelta
 import psycopg2
 from instance.config import secret_key, app_configuration
@@ -38,7 +38,7 @@ class User:
         result = self.cursor.fetchone()
         if result:
             self.connection.close()
-            return dict(message="Email already exists, try a different one.", error=400)
+            return dict(message="Email already exists, try a different one.", status="failed"), 400
 
         save_user_sql = """INSERT INTO users(email, password, role, created_at)
                           VALUES(%(email)s, %(password)s, %(role)s, %(created_at)s);"""
@@ -50,8 +50,8 @@ class User:
         success_register = self.cursor.fetchone()
         self.connection.close()
         if not success_register:
-            return dict(message="Failed to register.", error=404)
-        return dict(message="Successful registration. Kindly login", status="ok")
+            return dict(message="Failed to register.", status="failed"), 400
+        return dict(message="Successful registration. Kindly login", status="ok"), 201
 
     
     def login(self, email, password):
@@ -76,33 +76,15 @@ class User:
             return dict(error=401)
         return existing_user
 
-    def generate_auth_token(self, email):
-        """method to generate access token"""
+    def logout_user(self, token):
+        """Logout user by blacklisting token"""
+        token = get_raw_jwt()['jti']
+        blacklist_token_sql = """INSERT INTO tokens (token) VALUES ('{}')""".format(token)
+        self.cursor.execute(blacklist_token_sql)
+        self.connection.commit()
+        self.connection.close()
+        return dict(message="User log out success", status="ok"), 200
 
-        try:
-            jwt_payload = {
-                'exp': datetime.now() + timedelta(days=1, seconds=5),
-                'iat': datetime.now(),
-                'sub': email
-            }
-            return jwt.encode(
-                jwt_payload,
-                secret_key,
-                algorithm='HS256')
-
-        except Exception as exception_msg:
-            return exception_msg
-
-    def decode_auth_token(self, authentication_token):
-        """method to decode the authentication token"""
-
-        try:
-            payload = jwt.decode(authentication_token, secret_key)
-            return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return dict(expired='Signature expired. Please sign in again')
-        except jwt.InvalidTokenError:
-            return dict(invalid='Invalid token. Please sign in again')
 
     def __repr__(self):
         return "<User '{}'>".format(self.email)

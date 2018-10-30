@@ -11,8 +11,8 @@ class TestAuth(BaseTest):
                             content_type="application/json",
                             data=json.dumps({
                                             "email": "u3ser@user.com",
-                                            "password": "pass",
-                                            "confirm_password": "pass",
+                                            "password": "password",
+                                            "confirm_password": "password",
                                             "role": "admin"
                                            }))
 
@@ -26,8 +26,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "bad_pass",
+                                             "password": "password",
+                                             "confirm_password": "bad_password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 401)
@@ -40,7 +40,7 @@ class TestAuth(BaseTest):
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
                                              "password": "",
-                                             "confirm_password": "pass",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 400)
@@ -52,8 +52,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
@@ -62,8 +62,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 400)
@@ -75,8 +75,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
@@ -85,7 +85,7 @@ class TestAuth(BaseTest):
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
                      data=json.dumps({"email": "user@user.com",
-                                      "password": "pass"}))
+                                      "password": "password"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 200)
         self.assertEqual(user_login_result['status'], 'ok')
@@ -96,8 +96,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
@@ -106,7 +106,7 @@ class TestAuth(BaseTest):
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
                      data=json.dumps({"email": "user@user.com",
-                                      "password": "bad_pass"}))
+                                      "password": "bad_password"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 401)
         self.assertEqual(user_login_result['message'], 'incorrect email or password, try again')
@@ -117,8 +117,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
@@ -138,7 +138,7 @@ class TestAuth(BaseTest):
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
                      data=json.dumps({"email": "user@user.com",
-                                      "password": "pass"}))
+                                      "password": "password"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 401)
         self.assertEqual(user_login_result['message'], 'incorrect email or password, try again')
@@ -149,8 +149,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user.user*com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                              "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 400)
@@ -162,8 +162,8 @@ class TestAuth(BaseTest):
         user_registration = self.client().post('/api/v2/auth/signup',
                             content_type="application/json",
                             data=json.dumps({"email": "user@user.com",
-                                             "password": "pass",
-                                             "confirm_password": "pass",
+                                             "password": "password",
+                                             "confirm_password": "password",
                                               "role": "admin"}))
         user_reg_result = json.loads(user_registration.data)
         self.assertEqual(user_registration.status_code, 201)
@@ -172,7 +172,7 @@ class TestAuth(BaseTest):
         user_login = self.client().post('/api/v2/auth/login',
                      content_type="application/json",
                      data=json.dumps({"email": "user.user*com",
-                                      "password": "bad_pass"}))
+                                      "password": "bad_password"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 400)
         self.assertEqual(user_login_result['message'], 'Enter a valid email')

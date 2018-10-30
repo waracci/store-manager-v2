@@ -1,8 +1,9 @@
 """Login endpoint [POST]"""
 from flask_restplus import Namespace, Resource, reqparse
 from flask import make_response, jsonify, request
-from validate_email import validate_email
+from flask_jwt_extended import create_access_token, jwt_required
 
+from ..utils.helpers import validate_email
 from ..models.User import User
 from ..utils.Validator import AuthDataTransferObject
 
@@ -34,14 +35,14 @@ class RegistrationEndpoint(Resource):
         confirm_password = args['confirm_password']
         role = args['role']
 
-        if not validate_email(email):
+        if validate_email(email) is None:
             return dict(message="enter a valid email", status="failed"), 400
 
         if password == '' or password == ' ' or role == '' or role == ' ':
             return dict(message="Enter password and role", status="failed"), 400
 
-        # minimum characters for password
-        
+        if len(password) < 6:
+            return dict(message="password length should be more than 6 characters", status="failed"), 400        
 
         if not confirm_password:
             return dict(message="confirm password is required", status="failed"), 401
@@ -51,15 +52,14 @@ class RegistrationEndpoint(Resource):
 
         if not role:
             return dict(message="Role is required", status="failed"), 401
-
-        # add role validation
+        
+        roles = ['admin', 'attendant']
+        if role not in roles:
+            return dict(message="Incorrect role format", status="failed"), 401
 
         register_user = User()
         user_registration = register_user.save_user(email, password, confirm_password, role)
-
-        if 'error' in user_registration:
-            return dict(message=user_registration["message"],status="failed"), 400
-        return user_registration, 201
+        return user_registration
 
 @api.route('login')
 class LoginEndpoint(Resource):
@@ -75,7 +75,7 @@ class LoginEndpoint(Resource):
         if not email or not password:
             return dict(message="Email or password fields missing.", status="failed"), 401
 
-        if not validate_email(email):
+        if validate_email(email) is None:
             return dict(message="Enter a valid email", status="failed"), 400
 
         user= User()
@@ -84,5 +84,16 @@ class LoginEndpoint(Resource):
         if 'error' in user_login:
             return dict(message="incorrect email or password, try again", status="failed"), 401
             
-        token = user.generate_auth_token(user_login)
-        return make_response(jsonify({"status": "ok", "message": "success", "token":token.decode()}), 200)
+        token = create_access_token(identity=email)
+        return make_response(jsonify({"status": "ok", "message": "success", "token":token}), 200)
+
+@api.route('logout')
+class LogoutEndpoint(Resource):
+    """User logout endpoint"""
+    
+    @jwt_required
+    def post(self):
+        """Logout user"""
+        print('logout')
+        logout_user = User().logout_user(request.headers['Authorization'].split(" ")[1])
+        return logout_user

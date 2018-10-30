@@ -93,27 +93,22 @@ class Product():
             date_created= existing_product[8],
             modified_at= existing_product[9])
 
-    
-
-
-    def edit_product(self, productId, product_name, product_description, product_quantity,
+    def edit_product(self, productId, product_name, product_description, product_price, product_quantity,
        product_category, product_moq, added_by):
         """Class method to Edit Product details"""
-        product_item_edit = dict(
-            product_name=self.product_name,
-            product_description=self.product_description,
-            product_price=self.product_price,
-            product_quantity=self.product_quantity,
-            product_category=self.product_category,
-            product_moq=self.product_moq,
-            added_by=self.added_by,
-            date_modified=datetime.now()
-        )
-        put_sql = """UPDATE products SET name = %(product_name)s,
-         description = %(product_description)s, quantity = %(product_quantity)s,
-          category = %(product_category)s, moq = %(product_moq)s,
-           added_by = %(added_by)s, date_modified = %(date_modified)s WHERE id = ${productId}"""
-        self.cursor.execute(put_sql, product_item_edit)
+        self.cursor.execute("SELECT * FROM products WHERE id = %s", (productId,))
+        check_existing_product = self.cursor.fetchone()
+        # self.connection.close()
+        if not check_existing_product:
+            return dict(message="product not found", status="failed"), 404
+        # product_name = 
+        date_modified = datetime.now()
+        put_sql = """UPDATE products SET name = %s,
+                     description = %s, price=%s, quantity = %s,
+                     category = %s, moq = %s,
+                     added_by = %s, date_modified = %s WHERE id = %s"""
+        self.cursor.execute(put_sql, (product_name, product_description, product_price, product_quantity, 
+        product_category, product_moq, added_by, date_modified, productId))
         self.connection.commit()
         self.connection.close()
         return 'success'

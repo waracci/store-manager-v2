@@ -1,10 +1,11 @@
 from flask_restplus import Namespace, Resource
 from flask import make_response, jsonify, request
+from flask_jwt_extended import jwt_required
 
 from ..models.Sales import Sales
 from ..models.User import User
 from ..utils.Validator import SalesDataTransferObject
-from ..utils.jwt_decorator import jwt_required
+# from ..utils.jwt_decorator import jwt_required
 api = SalesDataTransferObject.sales_namespace
 sales_validator = SalesDataTransferObject.sales_model
 
