@@ -1,6 +1,6 @@
 """Product Model and data storage functions"""
 from datetime import datetime
-import  psycopg2.extras as extras 
+import psycopg2.extras as extras 
 
 from ..utils.database_helper import initialize_database
 
@@ -13,11 +13,12 @@ class Product():
         self.connection = initialize_database()
         self.cursor = self.connection.cursor()
 
-    def save_product(self, product_name, product_description, product_quantity,
+    def save_product(self, product_name, product_description, product_price, product_quantity,
        product_category, product_moq, added_by):
         """Product Class method to add product to list"""
         self.product_name = product_name
         self.product_description = product_description
+        self.product_price = product_price
         self.product_quantity = product_quantity
         self.product_category = product_category
         self.product_moq = product_moq
@@ -29,6 +30,7 @@ class Product():
         product_item = dict(
             product_name=self.product_name,
             product_description=self.product_description,
+            product_price=self.product_price,
             product_quantity=self.product_quantity,
             product_category=self.product_category,
             product_moq=self.product_moq,
@@ -43,9 +45,9 @@ class Product():
             self.connection.close()
             return dict(message="Product already exists", exists=True)
         save_product_sql = """INSERT INTO products 
-                              (name, description, quantity, category, 
-                              moq, added_by, date_created, modified_at)
-                              VALUES(%(product_name)s, %(product_description)s,
+                              (name, description, price, quantity, category, 
+                              moq, added_by, date_created, date_modified)
+                              VALUES(%(product_name)s, %(product_description)s, %(product_price)s,
                               %(product_quantity)s, %(product_category)s, %(product_moq)s,
                                %(added_by)s, %(date_created)s, %(date_modified)s);"""
         self.cursor.execute(save_product_sql, product_item)
@@ -65,7 +67,7 @@ class Product():
         products = custom_cursor.fetchall()
         self.connection.close()
         if not products:
-            return dict(error=401)
+            return dict(empty=404)
         all_products = []
         for row in products:
             all_products.append(dict(row))
@@ -76,7 +78,6 @@ class Product():
 
         self.cursor.execute("SELECT * FROM products WHERE id = (%s);", (productId,))
         existing_product = self.cursor.fetchone()
-        print(existing_product)
         self.connection.close()
         if not existing_product:
             return dict(error=401)
@@ -84,12 +85,16 @@ class Product():
             id= existing_product[0],
             name= existing_product[1], 
             description= existing_product[2],
-            quantity= existing_product[3],
-            category= existing_product[4],
-            moq= existing_product[5],
-            added_by= existing_product[6],
-            date_created= existing_product[7],
-            modified_at= existing_product[8])
+            price=existing_product[3],
+            quantity= existing_product[4],
+            category= existing_product[5],
+            moq= existing_product[6],
+            added_by= existing_product[7],
+            date_created= existing_product[8],
+            modified_at= existing_product[9])
+
+    
+
 
     def edit_product(self, productId, product_name, product_description, product_quantity,
        product_category, product_moq, added_by):
@@ -97,6 +102,7 @@ class Product():
         product_item_edit = dict(
             product_name=self.product_name,
             product_description=self.product_description,
+            product_price=self.product_price,
             product_quantity=self.product_quantity,
             product_category=self.product_category,
             product_moq=self.product_moq,
@@ -114,9 +120,9 @@ class Product():
 
     def delete_product(self, productId):
         """Class method to delete products from inventory"""
-
-        del_product = self.cursor.execute("DELETE FROM products WHERE id = (%s)", (productId,))
-        print(del_product)
+        self.cursor.execute("SELECT * FROM products WHERE id = (%s);", (productId,))
+        del_product = self.cursor.fetchone()
+        self.cursor.execute("DELETE FROM products WHERE id = (%s);", (productId,))
         if not del_product:
             return 'product id {} not found'.format(productId)
         self.connection.commit()

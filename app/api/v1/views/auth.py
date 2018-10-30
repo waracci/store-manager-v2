@@ -40,6 +40,9 @@ class RegistrationEndpoint(Resource):
         if password == '' or password == ' ' or role == '' or role == ' ':
             return dict(message="Enter password and role", status="failed"), 400
 
+        # minimum characters for password
+        
+
         if not confirm_password:
             return dict(message="confirm password is required", status="failed"), 401
 
@@ -49,11 +52,13 @@ class RegistrationEndpoint(Resource):
         if not role:
             return dict(message="Role is required", status="failed"), 401
 
+        # add role validation
+
         register_user = User()
         user_registration = register_user.save_user(email, password, confirm_password, role)
 
         if 'error' in user_registration:
-            return dict(message=user_registration["message"],error="error"), 400
+            return dict(message=user_registration["message"],status="failed"), 400
         return user_registration, 201
 
 @api.route('login')

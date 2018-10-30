@@ -8,9 +8,14 @@ class ProductDataTransferObject():
     product_model = product_namespace.model('product model', {
         'product_name': fields.String(description='product name'),
         'product_description': fields.String(description='product description'),
+        'product_price': fields.Integer(description='product price'),
         'product_quantity': fields.Integer(description='product stock quantity'),
         'product_category': fields.String(description='product category'),
         'product_moq': fields.Integer(description='product minimum order quantity')
+    })
+
+    product_sale_model = product_namespace.model('product model', {
+        'product_quantity': fields.Integer(description='product stock quantity')
     })
 
     product_response = product_namespace.model('Product response for any get method', {

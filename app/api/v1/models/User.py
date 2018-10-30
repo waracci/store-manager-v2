@@ -100,9 +100,9 @@ class User:
             payload = jwt.decode(authentication_token, secret_key)
             return payload['sub']
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please sign in again'
+            return dict(expired='Signature expired. Please sign in again')
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please sign in again'
+            return dict(invalid='Invalid token. Please sign in again')
 
     def __repr__(self):
         return "<User '{}'>".format(self.email)

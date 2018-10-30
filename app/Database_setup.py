@@ -23,12 +23,23 @@ class Database_Setup_Config:
             id             SERIAL PRIMARY KEY,
             name           VARCHAR(50)    UNIQUE NOT NULL,
             description    VARCHAR(100)   NOT NULL,
+            price          VARCHAR(50)    NOT NULL,
             quantity       VARCHAR(50)    NOT NULL,
             category       VARCHAR(50) NOT NULL,
             moq            VARCHAR(50) NOT NULL,
             added_by       VARCHAR(50) NOT NULL,
             date_created   VARCHAR(50),
-            modified_at    VARCHAR(50)
+            date_modified  VARCHAR(50)
+        );''')
+
+        # Initialize Sales Table
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS sales(
+            id             SERIAL PRIMARY KEY,
+            cart           VARCHAR(100)    NOT NULL,
+            cart_price     VARCHAR(100)   NOT NULL,
+            made_by        VARCHAR(100)   NOT NULL,
+            date_created   VARCHAR(100),
+            date_modified  VARCHAR(100)
         );''')
 
         self.database_connection.commit()
