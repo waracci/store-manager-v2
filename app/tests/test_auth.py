@@ -1,5 +1,5 @@
 import json
-from app.tests.v1.base_test import BaseTest
+from app.tests.base_test import BaseTest
 
 class TestAuth(BaseTest):
     """Test Suite for User Authentication, (login and registration)"""
