@@ -8,7 +8,6 @@ def admin_required_check(decorated_func):
     @wraps(decorated_func)
     def decorator(*args, **kwargs):
         current_user = User().get_single_user(get_jwt_identity())
-        print(current_user[3])
         if not current_user:
             return dict(message="user not found", status="failed"), 404
         if current_user[3] == 'attendant':

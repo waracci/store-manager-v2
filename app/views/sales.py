@@ -8,19 +8,12 @@ from ..utils.admin_required import admin_required_check
 from ..utils.Validator import SalesDataTransferObject
 # from ..utils.jwt_decorator import jwt_required
 api = SalesDataTransferObject.sales_namespace
-sales_validator = SalesDataTransferObject.sales_model
 
 
 @api.route('')
 class SalesEndpoint(Resource):
     """Sales Endpoints, fetch all sales and Fetch all sales"""
     doctsr = "Sales Endpoints, Fetch and retrieve sales records"
-
-    @api.doc(doctsr, security="Authentication_token")
-    @api.expect(sales_validator)
-    @jwt_required
-    def post(self):
-        pass
 
     @api.doc(security="Authentication_token")
     @jwt_required

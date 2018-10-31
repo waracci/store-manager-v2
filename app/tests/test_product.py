@@ -96,7 +96,7 @@ class TestProduct(BaseTest):
         self.assertEqual(fetch_single_product.status_code, 200)
 
     def test_product_details_can_be_edited(self):
-        """Test that a product details can be edited by attendant and admin"""
+        """Test that a product details can be edited and admin"""
 
         self.user_authentication_register(email="ulbricht@mail.com", password="password", confirm_password="password", role='admin')
         response = self.user_authentication_login(email="ulbricht@mail.com", password="password")

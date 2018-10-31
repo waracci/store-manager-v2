@@ -112,13 +112,14 @@ class GetSingleProduct(Resource):
     @api.expect(product_edit_model, validate=True)
     def put(self, productId):
         existing_product = Product().fetch_single_product(productId)
+        if 'error' in existing_product:
+            return dict(message="not found", status="failed"), 404
         data = request.get_json(force=True)
-        product_name = existing_product[0]['name']
+        product_name = (existing_product[0]['name']).lower()
         if 'product_name' in data:
-            same_name_product = Product().fetch_single_product_by_name(product_name)
-            if same_name_product:
-                if (same_name_product[0]['name']).lower() == ((data['product_name']).lower()):
-                    return dict(message="product name exists already", status="failed"), 400
+            same_name_product = Product().fetch_single_product_by_name((data['product_name']).lower())
+            if list(same_name_product)[0] != 'error':
+                return dict(message="product name exists already", status="failed"), 400
             product_name = data['product_name']
         product_description = existing_product[0]['description']
         if 'product_description' in data:

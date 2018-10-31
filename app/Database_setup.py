@@ -42,6 +42,16 @@ class Database_Setup_Config:
             date_modified  VARCHAR(100)
         );''')
 
+        # Initialize Category Table
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS categories(
+            id             SERIAL PRIMARY KEY,
+            name           VARCHAR(100)    NOT NULL,
+            description     VARCHAR(100)   NOT NULL,
+            added_by        VARCHAR(100)   NOT NULL,
+            date_created   VARCHAR(100),
+            date_modified  VARCHAR(100)
+        );''')
+
         self.database_connection.commit()
         self.cursor.close()
         self.database_connection.close()

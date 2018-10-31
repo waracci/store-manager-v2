@@ -30,10 +30,6 @@ class ProductDataTransferObject():
 class SalesDataTransferObject():
     sales_namespace = Namespace('Sales endpoints',
                 description='Sales endpoints to make a sale and view sales made')
-    sales_model = sales_namespace.model('sales response', {
-        'cart': fields.String(description='Sales cart, contains a list of products being sold'),
-        'cart_price': fields.Integer(description='Total sales price')
-    })
 
 class AuthDataTransferObject():
     authentication_namespace = Namespace('User Authentication',
@@ -48,3 +44,9 @@ class AuthDataTransferObject():
         'email': fields.String(description='User registration email'),
         'password': fields.String(description='User password')
     })
+class categoryDataTransferObject():
+    category_namespace = Namespace('Product Category',
+                description='Product categories')
+    category_model = category_namespace.model('category model', {
+        'category_name': fields.String(description="Category name"),
+        'category_description': fields.String(description="Category description")})

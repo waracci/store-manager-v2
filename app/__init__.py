@@ -13,6 +13,7 @@ from app.utils.database_helper import initialize_database
 from app.views.product import api as product_namespace
 from app.views.sales import api as sales_namespace
 from app.views.auth import api as auth_endpoint
+from app.views.category import api as category_namespace
 jwt = JWTManager()
 from app.models.User import blacklist
 def create_app(config_name):
@@ -48,6 +49,7 @@ def create_app(config_name):
     api.add_namespace(auth_endpoint, path='/auth/')
     api.add_namespace(product_namespace, path='/products')
     api.add_namespace(sales_namespace, path='/sales')
+    api.add_namespace(category_namespace, path='/category')
 
     jwt._set_error_handler_callbacks(api)
     
