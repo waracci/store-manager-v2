@@ -88,7 +88,7 @@ class TestAuth(BaseTest):
                                       "password": "password"}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 200)
-        self.assertEqual(user_login_result['status'], 'ok')
+        self.assertEqual(user_login_result['message'], 'success')
 
     def test_user_login_incorrect_password(self):
         """Test that user can not login with incorrect password"""
@@ -130,7 +130,7 @@ class TestAuth(BaseTest):
                                       "password": ""}))
         user_login_result = json.loads(user_login.data)
         self.assertEqual(user_login.status_code, 401)
-        self.assertEqual(user_login_result['message'], 'Email or password fields missing.')
+        self.assertEqual(user_login_result['message'], 'Email or password fields missing')
 
     def test_login_unregistered_account(self):
         """Test that login is successful for registered accounts only"""

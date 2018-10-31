@@ -36,26 +36,40 @@ class RegistrationEndpoint(Resource):
         role = args['role']
 
         if validate_email(email) is None:
-            return dict(message="enter a valid email", status="failed"), 400
+            response = jsonify({'message': 'enter a valid email'})
+            response.status_code = 400
+            return response
 
         if password == '' or password == ' ' or role == '' or role == ' ':
-            return dict(message="Enter password and role", status="failed"), 400
+            response = jsonify({'message': 'Enter password and role'})
+            response.status_code = 400
+            return response
 
         if len(password) < 6:
-            return dict(message="password length should be more than 6 characters", status="failed"), 400        
+            response = jsonify({'message': 'password length should be more than 6 characters'})
+            response.status_code = 400
+            return response
 
         if not confirm_password:
-            return dict(message="confirm password is required", status="failed"), 401
+            response = jsonify({'message': 'confirm password is required'})
+            response.status_code = 401
+            return response
 
         if password != confirm_password:
-            return dict(message="passwords do not match", status="failed"), 401
+            response = jsonify({'message': 'passwords do not match'})
+            response.status_code = 401
+            return response
 
         if not role:
-            return dict(message="Role is required", status="failed"), 401
+            response = jsonify({'message': 'Role is required'})
+            response.status_code = 401
+            return response
         
         roles = ['admin', 'attendant']
         if role not in roles:
-            return dict(message="Incorrect role format", status="failed"), 401
+            response = jsonify({'message': 'Incorrect role format'})
+            response.status_code = 401
+            return response
 
         register_user = User()
         user_registration = register_user.save_user(email, password, confirm_password, role)
@@ -73,19 +87,27 @@ class LoginEndpoint(Resource):
         email = args['email']
         password = args['password']
         if not email or not password:
-            return dict(message="Email or password fields missing.", status="failed"), 401
+            response = jsonify({'message': 'Email or password fields missing'})
+            response.status_code = 401
+            return response
 
         if validate_email(email) is None:
-            return dict(message="Enter a valid email", status="failed"), 400
+            response = jsonify({'message': 'Enter a valid email'})
+            response.status_code = 400
+            return response
 
         user= User()
         user_login  = user.login(email, password)
 
         if 'error' in user_login:
-            return dict(message="incorrect email or password, try again", status="failed"), 401
+            response = jsonify({'message': 'incorrect email or password, try again'})
+            response.status_code = 401
+            return response
             
         token = create_access_token(identity=email)
-        return make_response(jsonify({"status": "ok", "message": "success", "token":token}), 200)
+        response = jsonify({'message': 'success', 'token': token})
+        response.status_code = 200
+        return response
 
 @api.route('logout')
 class LogoutEndpoint(Resource):

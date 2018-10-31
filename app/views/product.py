@@ -43,11 +43,7 @@ class ProductEndpoint(Resource):
         moq = args['product_moq']
         if int(price) < 0 or int(quantity) < 0 or int(moq) < 0:
             return dict(message="item quantities cannot be zero", status="failed"), 400
-        # if name.strip() == "":
-        #     return dict()
-        # also check if negative
-        
-        # Make a validator method that takes in *args 
+
         added_by = get_jwt_identity()
         new_product = Product()
         response = new_product.save_product(name, description, price, quantity, category, moq, added_by)
@@ -98,7 +94,7 @@ class GetSingleProduct(Resource):
             return dict(message="product quantity cannot be zero or less", status="failed"), 400
         new_sale = Sales()
         existing_product = new_sale.sell_single_product(productId, quantity, get_jwt_identity())
-        # import pdb; pdb.set_trace()
+
         if 'unavailable' in existing_product:
             return dict(message="Product not found for sale", status="failed"), 404
             
