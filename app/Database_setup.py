@@ -26,7 +26,7 @@ class Database_Setup_Config:
             price          VARCHAR(50)    NOT NULL,
             quantity       VARCHAR(50)    NOT NULL,
             category       VARCHAR(50) NOT NULL,
-            moq            VARCHAR(50) NOT NULL,
+            minorder            VARCHAR(50) NOT NULL,
             added_by       VARCHAR(50) NOT NULL,
             date_created   VARCHAR(50),
             date_modified  VARCHAR(50)

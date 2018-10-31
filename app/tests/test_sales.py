@@ -22,7 +22,7 @@ class TestSales(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
@@ -50,7 +50,7 @@ class TestSales(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
@@ -86,7 +86,7 @@ class TestSales(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
@@ -119,7 +119,7 @@ class TestSales(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)

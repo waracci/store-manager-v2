@@ -11,7 +11,7 @@ class ProductDataTransferObject():
         'product_price': fields.Integer(description='product price'),
         'product_quantity': fields.Integer(description='product stock quantity'),
         'product_category': fields.String(description='product category'),
-        'product_moq': fields.Integer(description='product minimum order quantity')
+        'product_minorder': fields.Integer(description='product minimum order quantity')
     })
 
     product_edit_model = product_namespace.model('product model', {
@@ -20,7 +20,7 @@ class ProductDataTransferObject():
         'product_price': fields.Integer(description='product price'),
         'product_quantity': fields.Integer(description='product stock quantity'),
         'product_category': fields.String(description='product category'),
-        'product_moq': fields.Integer(description='product minimum order quantity')
+        'product_minorder': fields.Integer(description='product minimum order quantity')
     })
 
     product_sale_model = product_namespace.model('product model', {

@@ -18,7 +18,7 @@ parser.add_argument('product_name')
 parser.add_argument('product_description')
 parser.add_argument('product_quantity')
 parser.add_argument('product_category')
-parser.add_argument('product_moq')
+parser.add_argument('product_minorder')
 parser.add_argument('product_price')
 
 
@@ -41,13 +41,13 @@ class ProductEndpoint(Resource):
         price = args['product_price']
         quantity = args['product_quantity']
         category = args['product_category']
-        moq = args['product_moq']
-        if int(price) < 0 or int(quantity) < 0 or int(moq) < 0:
+        minorder = args['product_minorder']
+        if int(price) < 0 or int(quantity) < 0 or int(minorder) < 0:
             return dict(message="item quantities cannot be zero", status="failed"), 400
 
         added_by = get_jwt_identity()
         new_product = Product()
-        response = new_product.save_product(name, description, price, quantity, category, moq, added_by)
+        response = new_product.save_product(name, description, price, quantity, category, minorder, added_by)
         if 'exists' in response:
             return dict(message="product {} exists".format(name), status="failed"), 400
         return dict(message="Product {} added to inventory".format(name), status="ok"), 201
@@ -133,10 +133,10 @@ class GetSingleProduct(Resource):
         product_category = existing_product[0]['category']
         if 'product_catgory' in data:
             product_category = data['product_category']
-        product_moq = existing_product[0]['moq']
-        if 'product_moq' in data:
-            product_moq = data['product_moq']
+        product_minorder = existing_product[0]['minorder']
+        if 'product_minorder' in data:
+            product_minorder = data['product_minorder']
         Product().edit_product(productId, product_name, product_description, 
                                               product_price, product_quantity,
-                                              product_category, product_moq, get_jwt_identity())
+                                              product_category, product_minorder, get_jwt_identity())
         return dict(message="success", status="ok"), 200

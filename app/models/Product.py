@@ -15,14 +15,14 @@ class Product():
         self.custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
 
     def save_product(self, product_name, product_description, product_price, product_quantity,
-       product_category, product_moq, added_by):
+       product_category, product_minorder, added_by):
         """Product Class method to add product to list"""
         self.product_name = product_name
         self.product_description = product_description
         self.product_price = product_price
         self.product_quantity = product_quantity
         self.product_category = product_category
-        self.product_moq = product_moq
+        self.product_minorder = product_minorder
         self.added_by = added_by
 
         self.date_created = datetime.now()
@@ -34,7 +34,7 @@ class Product():
             product_price=self.product_price,
             product_quantity=self.product_quantity,
             product_category=self.product_category,
-            product_moq=self.product_moq,
+            product_minorder=self.product_minorder,
             added_by=self.added_by,
             date_created=self.date_created,
             date_modified=self.date_modified
@@ -47,9 +47,9 @@ class Product():
             return dict(message="Product already exists", exists=True)
         save_product_sql = """INSERT INTO products 
                               (name, description, price, quantity, category, 
-                              moq, added_by, date_created, date_modified)
+                              minorder, added_by, date_created, date_modified)
                               VALUES(%(product_name)s, %(product_description)s, %(product_price)s,
-                              %(product_quantity)s, %(product_category)s, %(product_moq)s,
+                              %(product_quantity)s, %(product_category)s, %(product_minorder)s,
                                %(added_by)s, %(date_created)s, %(date_modified)s);"""
         self.cursor.execute(save_product_sql, product_item)
         self.connection.commit()
@@ -100,7 +100,7 @@ class Product():
         return product
 
     def edit_product(self, productId, product_name, product_description, product_price, product_quantity,
-       product_category, product_moq, added_by):
+       product_category, product_minorder, added_by):
         """Class method to Edit Product details"""
         self.cursor.execute("SELECT * FROM products WHERE id = %s", (productId,))
         check_existing_product = self.cursor.fetchone()
@@ -110,10 +110,10 @@ class Product():
         date_modified = datetime.now()
         put_sql = """UPDATE products SET name = %s,
                      description = %s, price=%s, quantity = %s,
-                     category = %s, moq = %s,
+                     category = %s, minorder = %s,
                      added_by = %s, date_modified = %s WHERE id = %s"""
         self.cursor.execute(put_sql, (product_name, product_description, product_price, product_quantity, \
-        product_category, product_moq, added_by, date_modified, productId))
+        product_category, product_minorder, added_by, date_modified, productId))
         self.connection.commit()
         self.connection.close()
         return 'success'

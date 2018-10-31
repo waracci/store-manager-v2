@@ -21,7 +21,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
@@ -41,7 +41,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'requires admin')
         self.assertEqual(product_posted.status_code, 406)
@@ -60,7 +60,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['status'], 'ok')
         self.assertEqual(product_posted.status_code, 201)
@@ -87,7 +87,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(product_posted.status_code, 201)
 
@@ -111,7 +111,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(product_posted.status_code, 201)
 
@@ -127,7 +127,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         edit_product_result = json.loads(edit_single_product.data)
         self.assertEqual(edit_single_product.status_code, 200)
         self.assertEqual(edit_product_result['message'], 'success')
@@ -153,7 +153,7 @@ class TestProduct(BaseTest):
                                                     "product_quantity": 5,
                                                     "product_price": 100,
                                                     "product_category": "bakery",
-                                                    "product_moq": 100}))
+                                                    "product_minorder": 100}))
         result = json.loads(product_posted.data.decode())
         self.assertEqual(product_posted.status_code, 201)
 
