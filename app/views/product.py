@@ -1,9 +1,10 @@
 from flask_restplus import Namespace, Resource, reqparse
 from flask import make_response, jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_current_user
 from ..models.Product import Product
 from ..models.Sales import Sales
 from ..models.User import User
+from ..utils.admin_required import admin_required_check
 from ..utils.Validator import ProductDataTransferObject
 api = ProductDataTransferObject.product_namespace
 
@@ -11,7 +12,6 @@ api = ProductDataTransferObject.product_namespace
 product_validator_model = ProductDataTransferObject.product_model
 product_sale_model = ProductDataTransferObject.product_sale_model
 product_edit_model = ProductDataTransferObject.product_edit_model
-product_validator_response = ProductDataTransferObject.product_response
 
 parser = reqparse.RequestParser()
 parser.add_argument('product_name')
@@ -32,6 +32,7 @@ class ProductEndpoint(Resource):
     @api.expect(product_validator_model, validate=True)
     @api.doc(docStr, security='Authentication_token')
     @jwt_required
+    @admin_required_check
     def post(self):
         """Add a product to inventory"""
         args = parser.parse_args()
@@ -76,6 +77,7 @@ class GetSingleProduct(Resource):
         return dict(product=existing_product, status="ok"), 200
     
     @jwt_required
+    @admin_required_check
     def delete(self, productId):
         """Delete a single product"""
         product = Product()
@@ -104,29 +106,33 @@ class GetSingleProduct(Resource):
         if 'remaining' in existing_product:
             return dict(message="Low stock levels, sale cannot be completed", status="failed"), 400
 
-        return existing_product, 200
+        return existing_product, 201
 
     @jwt_required
     @api.expect(product_edit_model, validate=True)
     def put(self, productId):
         existing_product = Product().fetch_single_product(productId)
-        data = request.get_json()
-        product_name = existing_product['name']
+        data = request.get_json(force=True)
+        product_name = existing_product[0]['name']
         if 'product_name' in data:
+            same_name_product = Product().fetch_single_product_by_name(product_name)
+            if same_name_product:
+                if (same_name_product[0]['name']).lower() == ((data['product_name']).lower()):
+                    return dict(message="product name exists already", status="failed"), 400
             product_name = data['product_name']
-        product_description = existing_product['description']
+        product_description = existing_product[0]['description']
         if 'product_description' in data:
             product_description = data['product_description']
-        product_price = existing_product['price']
+        product_price = existing_product[0]['price']
         if 'product_price' in data:
             product_price = data['product_price']
-        product_quantity = existing_product['quantity']
+        product_quantity = existing_product[0]['quantity']
         if 'product_quantity' in data:
-            product_quantity = data['product_quantity']
-        product_category = existing_product['category']
+            product_quantity = (data['product_quantity'])
+        product_category = existing_product[0]['category']
         if 'product_catgory' in data:
             product_category = data['product_category']
-        product_moq = existing_product['moq']
+        product_moq = existing_product[0]['moq']
         if 'product_moq' in data:
             product_moq = data['product_moq']
         Product().edit_product(productId, product_name, product_description, 

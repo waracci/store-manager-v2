@@ -27,19 +27,6 @@ class ProductDataTransferObject():
         'product_quantity': fields.Integer(description='product stock quantity')
     })
 
-    product_response = product_namespace.model('Product response for any get method', {
-        'product_id': fields.Integer(description='Unique Id for every product'),
-        'product_name': fields.String(description='product name'),
-        'product_description': fields.String(description='product description'),
-        'product_quantity': fields.Integer(description='product quantity'),
-        'product_category': fields.String(description='product category'),
-        'product_moq': fields.Integer(description='Minimum order quantity'),
-        'product_quantity_store': fields.Integer(description='stock level'),
-        'date_created': fields.DateTime(dt_format='rfc822', description='date product was added to inventory'),
-        'date_modified': fields.DateTime(dt_format='rfc822', description='date product details were modified'),
-        'added_by': fields.String(description='Identity of admin that added the product')
-    })
-
 class SalesDataTransferObject():
     sales_namespace = Namespace('Sales endpoints',
                 description='Sales endpoints to make a sale and view sales made')

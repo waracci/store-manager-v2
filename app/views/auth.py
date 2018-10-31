@@ -1,7 +1,7 @@
 """Login endpoint [POST]"""
 from flask_restplus import Namespace, Resource, reqparse
 from flask import make_response, jsonify, request
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from ..utils.helpers import validate_email
 from ..models.User import User
@@ -68,7 +68,6 @@ class LoginEndpoint(Resource):
     @api.expect(authentication_validator_login)
     def post(self):
         """login existing user"""
-
         args = parser.parse_args()
         email = args['email']
         password = args['password']

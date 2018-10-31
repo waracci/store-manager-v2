@@ -42,12 +42,6 @@ class Database_Setup_Config:
             date_modified  VARCHAR(100)
         );''')
 
-        # Initialize token table
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS tokens(
-            id              SERIAL PRIMARY KEY,
-            token           VARCHAR
-        );''')
-
         self.database_connection.commit()
         self.cursor.close()
         self.database_connection.close()

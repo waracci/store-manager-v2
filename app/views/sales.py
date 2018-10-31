@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required
 
 from ..models.Sales import Sales
 from ..models.User import User
+from ..utils.admin_required import admin_required_check
 from ..utils.Validator import SalesDataTransferObject
 # from ..utils.jwt_decorator import jwt_required
 api = SalesDataTransferObject.sales_namespace
@@ -44,6 +45,8 @@ class GetSingleSalesRecord(Resource):
         existing_sale = sale.fetch_single_sales_record(saleId)
         if 'error' in existing_sale:
             return dict(message="sales record not found", status="failed"), 404
+        if 'unauthorized' in existing_sale:
+            return dict(message="requires admin", status="failed"), 406
         return dict(sale=existing_sale, status="ok"), 200
     
     @jwt_required

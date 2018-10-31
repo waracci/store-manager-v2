@@ -29,7 +29,8 @@ def create_app(config_name):
     def check_if_token_in_blacklist(decrypted_token):
         jti = decrypted_token['jti']
         return jti in blacklist
-
+    db = Database_Setup_Config(config_name)
+    db.initialize_database_tables()
     version2 = Blueprint('api version 2', __name__, url_prefix='/api/v2')
     authorizations = {'Authentication_token': {
     'type': 'apiKey',

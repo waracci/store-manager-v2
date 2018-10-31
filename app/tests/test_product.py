@@ -26,30 +26,30 @@ class TestProduct(BaseTest):
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
 
-    # def test_post_product_admin_only(self):
-    #     """Test that only admin can post a Product"""
-
-    #     self.user_authentication_register(email="mail1234@mail.com", password="password", confirm_password="password", role="attendant")
-    #     login_response = self.user_authentication_login(email="mail1234@mail.com", password="password")
-
-    #     authentication_token = json.loads(login_response.data.decode())['token']
-    #     product_posted = self.client().post('/api/v2/products',
-    #                                 content_type="application/json",
-    #                                 headers=dict(Authorization="Bearer {}".format(authentication_token)),
-    #                                 data=json.dumps({"product_name": "cake",
-    #                                                 "product_description": "sweet and lovely",
-    #                                                 "product_quantity": 5,
-    #                                                 "product_price": 100,
-    #                                                 "product_category": "bakery",
-    #                                                 "product_moq": 100}))
-    #     result = json.loads(product_posted.data.decode())
-    #     self.assertEqual(result['message'], 'admin required')
-    #     self.assertEqual(product_posted.status_code, 401)
-
-    def test_fetch_all_products(self):
-        """Test that user can fetch all products"""
+    def test_post_product_admin_only(self):
+        """Test that only admin can post a Product"""
 
         self.user_authentication_register(email="mail1234@mail.com", password="password", confirm_password="password", role="attendant")
+        login_response = self.user_authentication_login(email="mail1234@mail.com", password="password")
+
+        authentication_token = json.loads(login_response.data.decode())['token']
+        product_posted = self.client().post('/api/v2/products',
+                                    content_type="application/json",
+                                    headers=dict(Authorization="Bearer {}".format(authentication_token)),
+                                    data=json.dumps({"product_name": "cake",
+                                                    "product_description": "sweet and lovely",
+                                                    "product_quantity": 5,
+                                                    "product_price": 100,
+                                                    "product_category": "bakery",
+                                                    "product_moq": 100}))
+        result = json.loads(product_posted.data.decode())
+        self.assertEqual(result['message'], 'requires admin')
+        self.assertEqual(product_posted.status_code, 406)
+
+    def test_fetch_all_products(self):
+        """Test that attendant can not fetch all products"""
+
+        self.user_authentication_register(email="mail1234@mail.com", password="password", confirm_password="password", role="admin")
         login_response = self.user_authentication_login(email="mail1234@mail.com", password="password")
         authentication_token = json.loads(login_response.data.decode())['token']
         product_posted = self.client().post('/api/v2/products',
@@ -76,7 +76,7 @@ class TestProduct(BaseTest):
 
         self.user_authentication_register(email="ulbricht@mail.com", password="password", confirm_password="password", role='admin')
         response = self.user_authentication_login(email="ulbricht@mail.com", password="password")
-
+    
         authentication_token = json.loads(response.data.decode())['token']
 
         product_posted = self.client().post('/api/v2/products',
@@ -95,42 +95,47 @@ class TestProduct(BaseTest):
                                                 headers=dict(Authorization="Bearer {}".format(authentication_token)))
         self.assertEqual(fetch_single_product.status_code, 200)
 
-    # def test_product_details_can_be_edited(self):
-    #     """Test that a product details can be edited by attendant and admin"""
+    def test_product_details_can_be_edited(self):
+        """Test that a product details can be edited by attendant and admin"""
 
-    #     self.user_authentication_register(email="ulbricht@mail.com", password="password", confirm_password="password", role='admin')
-    #     response = self.user_authentication_login(email="ulbricht@mail.com", password="password")
+        self.user_authentication_register(email="ulbricht@mail.com", password="password", confirm_password="password", role='admin')
+        response = self.user_authentication_login(email="ulbricht@mail.com", password="password")
 
-    #     authentication_token = json.loads(response.data.decode())['token']
+        authentication_token = json.loads(response.data.decode())['token']
 
-    #     product_posted = self.client().post('/api/v2/products',
-    #                                 content_type="application/json",
-    #                                 headers=dict(Authorization="Bearer {}".format(authentication_token)),
-    #                                 data=json.dumps({"product_name": "cake",
-    #                                                 "product_description": "sweet and lovely",
-    #                                                 "product_quantity": 5,
-    #                                                 "product_price": 100,
-    #                                                 "product_category": "bakery",
-    #                                                 "product_moq": 100}))
-    #     result = json.loads(product_posted.data.decode())
-    #     self.assertEqual(product_posted.status_code, 201)
+        product_posted = self.client().post('/api/v2/products',
+                                    content_type="application/json",
+                                    headers=dict(Authorization="Bearer {}".format(authentication_token)),
+                                    data=json.dumps({"product_name": "cake",
+                                                    "product_description": "sweet and lovely",
+                                                    "product_quantity": 5,
+                                                    "product_price": 100,
+                                                    "product_category": "bakery",
+                                                    "product_moq": 100}))
+        result = json.loads(product_posted.data.decode())
+        self.assertEqual(product_posted.status_code, 201)
 
+        fetch_single_product = self.client().get('/api/v2/products/1',
+                                                        headers=dict(Authorization="Bearer {}".format(authentication_token)))
+        self.assertEqual(fetch_single_product.status_code, 200)
 
-    #     edit_single_product = self.client().put('/api/v2/products/1',
-    #                                             headers=dict(Authorization="Bearer {}".format(authentication_token)),
-    #                                             data=json.dumps({"product_name": "Eggnog",
-    #                                                             "product_description": "sweet and sour",
-    #                                                             "product_quantity": 15,
-    #                                                             "product_category": "dessert",
-    #                                                             "product_moq": 650}))
-    #     edit_product_result = json.loads(edit_single_product.data)
+        edit_single_product = self.client().put('/api/v2/products/1',
+                                                headers=dict(Authorization="Bearer {}".format(authentication_token)),
+                                                content_type='application/json',
+                                                data=json.dumps({"product_name": "Eggnog",
+                                                    "product_description": "sweet and lovely",
+                                                    "product_quantity": 5,
+                                                    "product_price": 100,
+                                                    "product_category": "bakery",
+                                                    "product_moq": 100}))
+        edit_product_result = json.loads(edit_single_product.data)
+        self.assertEqual(edit_single_product.status_code, 200)
+        self.assertEqual(edit_product_result['message'], 'success')
 
-    #     self.assertEqual(edit_single_product.status_code, 200)
-    #     self.assertEqual(edit_product_result['product']['product_name'], 'Eggnog')
-
-    #     fetch_single_product = self.client().get('/api/v2/products/1',
-    #                                             headers=dict(Authorization="Bearer {}".format(authentication_token)))
-    #     self.assertEqual(fetch_single_product.status_code, 200)
+        fetch_single_product = self.client().get('/api/v2/products/1',
+                                                headers=dict(Authorization="Bearer {}".format(authentication_token)))
+        self.assertEqual(fetch_single_product.status_code, 200)
+        self.assertEqual(json.loads(fetch_single_product.data)['product'][0]['name'], 'Eggnog')
 
     def test_user_can_delete_product(self):
         """Test that admin can delete a product"""

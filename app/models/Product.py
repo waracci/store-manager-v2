@@ -12,6 +12,7 @@ class Product():
         """Initialise the Product model with constructor"""
         self.connection = initialize_database()
         self.cursor = self.connection.cursor()
+        self.custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
 
     def save_product(self, product_name, product_description, product_price, product_quantity,
        product_category, product_moq, added_by):
@@ -62,9 +63,8 @@ class Product():
 
     def fetch_all_products(self):
         """Product Class method to fetch all products"""
-        custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
-        custom_cursor.execute("SELECT * FROM products;")
-        products = custom_cursor.fetchall()
+        self.custom_cursor.execute("SELECT * FROM products;")
+        products = self.custom_cursor.fetchall()
         self.connection.close()
         if not products:
             return dict(empty=404)
@@ -76,29 +76,34 @@ class Product():
     def fetch_single_product(self, productId):
         """Product Class method to fetch a single product by ID"""
 
-        self.cursor.execute("SELECT * FROM products WHERE id = (%s);", (productId,))
-        existing_product = self.cursor.fetchone()
+        self.custom_cursor.execute("SELECT * FROM products WHERE id = (%s);", (productId,))
+        existing_product = self.custom_cursor.fetchall()
         self.connection.close()
         if not existing_product:
             return dict(error=401)
-        return dict(
-            id= existing_product[0],
-            name= existing_product[1], 
-            description= existing_product[2],
-            price=existing_product[3],
-            quantity= existing_product[4],
-            category= existing_product[5],
-            moq= existing_product[6],
-            added_by= existing_product[7],
-            date_created= existing_product[8],
-            modified_at= existing_product[9])
+        product = []
+        for row in existing_product:
+            product.append(dict(row))
+        return product
+
+    def fetch_single_product_by_name(self, productName):
+        """Product Class method to fetch a single product by ID"""
+
+        self.custom_cursor.execute("SELECT * FROM products WHERE name = (%s);", (productName,))
+        existing_product = self.custom_cursor.fetchall()
+        self.connection.close()
+        if not existing_product:
+            return dict(error=401)
+        product = []
+        for row in existing_product:
+            product.append(dict(row))
+        return product
 
     def edit_product(self, productId, product_name, product_description, product_price, product_quantity,
        product_category, product_moq, added_by):
         """Class method to Edit Product details"""
         self.cursor.execute("SELECT * FROM products WHERE id = %s", (productId,))
         check_existing_product = self.cursor.fetchone()
-        # self.connection.close()
         if not check_existing_product:
             return dict(message="product not found", status="failed"), 404
         # product_name = 
@@ -107,7 +112,7 @@ class Product():
                      description = %s, price=%s, quantity = %s,
                      category = %s, moq = %s,
                      added_by = %s, date_modified = %s WHERE id = %s"""
-        self.cursor.execute(put_sql, (product_name, product_description, product_price, product_quantity, 
+        self.cursor.execute(put_sql, (product_name, product_description, product_price, product_quantity, \
         product_category, product_moq, added_by, date_modified, productId))
         self.connection.commit()
         self.connection.close()
