@@ -4,8 +4,11 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import get_raw_jwt
 from datetime import datetime, timedelta
 import psycopg2
+
 from instance.config import secret_key, app_configuration
 from ..utils.database_helper import initialize_database
+# from app.__init__ import blacklist
+blacklist = set()
 
 class User:
     """User class contains user constructor and authentication methods"""
@@ -79,10 +82,7 @@ class User:
     def logout_user(self, token):
         """Logout user by blacklisting token"""
         token = get_raw_jwt()['jti']
-        blacklist_token_sql = """INSERT INTO tokens (token) VALUES ('{}')""".format(token)
-        self.cursor.execute(blacklist_token_sql)
-        self.connection.commit()
-        self.connection.close()
+        blacklist.add(token) 
         return dict(message="User log out success", status="ok"), 200
 
 

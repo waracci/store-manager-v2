@@ -13,9 +13,8 @@ from app.utils.database_helper import initialize_database
 from app.views.product import api as product_namespace
 from app.views.sales import api as sales_namespace
 from app.views.auth import api as auth_endpoint
-connection = initialize_database()
 jwt = JWTManager()
-
+from app.models.User import blacklist
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False
@@ -23,17 +22,14 @@ def create_app(config_name):
     app.config.from_pyfile('config.py')
     app.config['JWT_SECRET_KEY'] = os.getenv('SECRET')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+    app.config['JWT_BLACKLIST_ENABLED'] = True
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
     jwt.init_app(app)
-    cursor = connection.cursor()
     @jwt.token_in_blacklist_loader
     def check_if_token_in_blacklist(decrypted_token):
         jti = decrypted_token['jti']
-        cursor.execute("SELECT * FROM tokens WHERE token = %s;", (jti,))
-        black_token = cursor.fetchone()
-        return black_token
+        return jti in blacklist
 
-    application_database_connection = Database_Setup_Config(config_name)
-    application_database_connection.initialize_database_tables()
     version2 = Blueprint('api version 2', __name__, url_prefix='/api/v2')
     authorizations = {'Authentication_token': {
     'type': 'apiKey',
@@ -52,6 +48,7 @@ def create_app(config_name):
     api.add_namespace(product_namespace, path='/products')
     api.add_namespace(sales_namespace, path='/sales')
 
+    jwt._set_error_handler_callbacks(api)
     
 
     return app
