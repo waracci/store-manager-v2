@@ -1,0 +1,30 @@
+language: python
+
+python:
+  - 3.6
+
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+
+services:
+  - postgresql
+
+before_script:
+- psql -c "create database test_store_manager;" -U postgres
+
+- psql -c "create user warachi WITH PASSWORD 'warachi';" -U postgres
+
+script: 
+  - export APP_SETTINGS="testing"
+  - export SECRET="whereswaldofindhim"
+  - export Test_URL="dbname=test_store_manager user=warachi password=warachi"
+  - pytest --cov-report term-missing --cov=app
+
+  - coveralls
+
+after_success:
+  - coveralls
+
+cache:
+  - pip
