@@ -88,7 +88,6 @@ class TestProduct(BaseTest):
                                                     "product_price": 100,
                                                     "product_category": "bakery",
                                                     "product_minorder": 100}))
-        result = json.loads(product_posted.data.decode())
         self.assertEqual(product_posted.status_code, 201)
 
         fetch_single_product = self.client().get('/api/v2/products/1',
@@ -112,7 +111,6 @@ class TestProduct(BaseTest):
                                                     "product_price": 100,
                                                     "product_category": "bakery",
                                                     "product_minorder": 100}))
-        result = json.loads(product_posted.data.decode())
         self.assertEqual(product_posted.status_code, 201)
 
         fetch_single_product = self.client().get('/api/v2/products/1',
@@ -154,7 +152,6 @@ class TestProduct(BaseTest):
                                                     "product_price": 100,
                                                     "product_category": "bakery",
                                                     "product_minorder": 100}))
-        result = json.loads(product_posted.data.decode())
         self.assertEqual(product_posted.status_code, 201)
 
 
