@@ -18,7 +18,7 @@ class TestingConfig(Config):
     """Testing Config"""
     TESTING = True
     DEBUG = True
-    DATABASE_CONNECTION_URL = "dbname='test_store' user='postgres' host='localhost' password='waracci'"
+    DATABASE_CONNECTION_URL = os.getenv('DATABASE_CONNECTION_URL')
 
 
 class ProductionConfig(Config):

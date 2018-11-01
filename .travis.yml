@@ -18,7 +18,7 @@ before_script:
 script: 
   - export APP_SETTINGS="testing"
   - export SECRET="whereswaldofindhim"
-  - export Test_URL="dbname=test_store_manager user=warachi password=warachi"
+  - export DATABASE_CONNECTION_URL="dbname=test_store_manager user=warachi password=warachi"
   - pytest --cov-report term-missing --cov=app
 
   - coveralls
