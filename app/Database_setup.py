@@ -34,12 +34,14 @@ class Database_Setup_Config:
 
         # Initialize Sales Table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS sales(
-            id             SERIAL PRIMARY KEY,
-            cart           VARCHAR(100)    NOT NULL,
-            cart_price     VARCHAR(100)   NOT NULL,
-            made_by        VARCHAR(100)   NOT NULL,
-            date_created   VARCHAR(100),
-            date_modified  VARCHAR(100)
+            id                  SERIAL PRIMARY KEY,
+            product_name        VARCHAR(100)    NOT NULL,
+            product_id          VARCHAR(100)   NOT NULL,
+            product_quantity    VARCHAR(100)   NOT NULL,
+            sales_total         VARCHAR(100)   NOT NULL,
+            made_by             VARCHAR(100)   NOT NULL,
+            date_created        VARCHAR(100),
+            date_modified       VARCHAR(100)
         );''')
 
         # Initialize Category Table

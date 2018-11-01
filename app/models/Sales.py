@@ -15,6 +15,7 @@ class Sales:
         """Initialise the Sales model with constructor"""
         self.connection = initialize_database()
         self.cursor = self.connection.cursor()
+        self.custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
         
     def sell_single_product(self, productId, product_quantity, made_by):
         """Class method to sell single product """
@@ -34,25 +35,21 @@ class Sales:
         update_sql = "UPDATE products SET quantity = (%s) WHERE id = (%s);"
         self.cursor.execute(update_sql, (remaining_quantity, productId))
 
-        self.cart = {
-           "product_name": sale_item[1],
-           "product_id": sale_item[0],
-           "product_quantity": product_quantity 
-        }
-        self.cart_price = sale_total
+        self.product_name = sale_item[1]
+        self.product_id = sale_item[0]
+        self.product_quantity = product_quantity
+        self.sales_total = sale_total
         self.made_by = made_by
 
         self.date_created = datetime.now()
         self.date_modified = datetime.now()
         
         save_sales_sql = """INSERT INTO sales 
-                            (cart, cart_price, made_by, 
-                            date_created, date_modified)
-                            VALUES(%s, %s, %s, %s, %s);"""
+                            (product_name, product_id, product_quantity, sales_total, made_by, 
+                            date_created, date_modified) VALUES(%s, %s, %s, %s, %s, %s, %s);"""
 
-        self.cursor.execute(save_sales_sql, [Json(self.cart), self.cart_price, 
-                                            self.made_by, self.date_created, 
-                                            self.date_modified])
+        self.cursor.execute(save_sales_sql, (self.product_name, self.product_id, self.product_quantity, self.sales_total, 
+                                            self.made_by, self.date_created, self.date_modified))
 
         self.connection.commit()
         self.connection.close()
@@ -66,22 +63,22 @@ class Sales:
     def fetch_all_sales(self):
         """Sales Class method to fetch all sales"""
         all_sales = []        
-        custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
+        
         check_user_role = User().get_single_user(get_jwt_identity())
         if not check_user_role:
             return dict(message="user not found", status="failed"), 404
         if check_user_role[3] == 'attendant':
             get_attendant_sales_sql = "SELECT * FROM sales WHERE made_by = (%s);"
-            custom_cursor.execute(get_attendant_sales_sql, (get_jwt_identity(),))
-            attendant_sales = custom_cursor.fetchall()
+            self.custom_cursor.execute(get_attendant_sales_sql, (get_jwt_identity(),))
+            attendant_sales = self.custom_cursor.fetchall()
             self.connection.close()
             if not attendant_sales:
                 return dict(error=401)
             for row in attendant_sales:
                 all_sales.append(dict(row))
             return all_sales
-        custom_cursor.execute("SELECT * FROM sales;")
-        sales = custom_cursor.fetchall()
+        self.custom_cursor.execute("SELECT * FROM sales;")
+        sales = self.custom_cursor.fetchall()
         self.connection.close()
         if not sales:
             return dict(empty=404)
@@ -95,30 +92,24 @@ class Sales:
         if not check_user_attendant:
             return dict(message="user not found", status="failed"), 404
         if check_user_attendant[3] == 'attendant':
-            self.cursor.execute("SELECT * FROM sales WHERE id = (%s);", (salesId,))
-            existing_sales = self.cursor.fetchone()
+            self.custom_cursor.execute("SELECT * FROM sales WHERE id = (%s);", (salesId,))
+            existing_sales = self.custom_cursor.fetchall()
             self.connection.close()
             if existing_sales[3] == get_jwt_identity():
-                return dict(
-                    id=existing_sales[0],
-                    cart = json.loads(existing_sales[1]),
-                    cart_price = existing_sales[2],
-                    made_by = existing_sales[3],  
-                    date_created=existing_sales[4],
-                    date_modified=existing_sales[5])
+                sale_record = []
+                for row in existing_sales:
+                    sale_record.append(dict(row))
+                return sale_record
             return dict(unauthorized=True)
-        self.cursor.execute("SELECT * FROM sales WHERE id = (%s);", (salesId,))
-        existing_sales = self.cursor.fetchone()
+        self.custom_cursor.execute("SELECT * FROM sales WHERE id = (%s);", (salesId,))
+        existing_sales = self.custom_cursor.fetchall()
         self.connection.close()
         if not existing_sales:
             return dict(error=401)
-        return dict(
-            id=existing_sales[0],
-            cart = json.loads(existing_sales[1]),
-            cart_price = existing_sales[2],
-            made_by = existing_sales[3],  
-            date_created=existing_sales[4],
-            date_modified=existing_sales[5])
+        sale_record = []
+        for row in existing_sales:
+            sale_record.append(dict(row))
+        return sale_record
 
     def delete_sale(self, saleId):
         """Class method to delete sales records"""

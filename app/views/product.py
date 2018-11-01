@@ -84,29 +84,6 @@ class GetSingleProduct(Resource):
         del_product = product.delete_product(productId)
         return dict(message=del_product, status="ok"), 200
 
-    @jwt_required
-    @api.expect(product_sale_model, validate=True)
-    def post(self, productId):
-        """Sell a single product"""
-        args = parser.parse_args()
-        quantity = args['product_quantity']
-        if not quantity:
-            return dict(message="product_quantity not provided", status="failed"), 400
-        if int(quantity) <= 0:
-            return dict(message="product quantity cannot be zero or less", status="failed"), 400
-        new_sale = Sales()
-        existing_product = new_sale.sell_single_product(productId, quantity, get_jwt_identity())
-
-        if 'unavailable' in existing_product:
-            return dict(message="Product not found for sale", status="failed"), 404
-            
-        if 'insufficient' in existing_product:
-            return dict(message="{} products remaining only".format(existing_product['quantity']), status="failed"), 404
-        
-        if 'remaining' in existing_product:
-            return dict(message="Low stock levels, sale cannot be completed", status="failed"), 400
-
-        return existing_product, 201
 
     @jwt_required
     @api.expect(product_edit_model, validate=True)
