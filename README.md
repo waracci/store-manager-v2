@@ -1,5 +1,5 @@
 # Store Manager
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/cbaff03d141b6cd93d47/maintainability)](https://codeclimate.com/github/waracci/store-manager-v2/maintainability)
 
 ## Introduction
 
@@ -12,6 +12,7 @@ Store Manager is a web application that helps store owners manage sales and prod
 3. Admin/store attendant can get a specific product
 4. Store attendant can add a sale order
 5. Admin can get all sale records
+6. Admin can manage addition, editing and deletion of categories
 
 ### Installing
 
@@ -73,25 +74,39 @@ environment variables are stored in .env file
 
 ### API-Endpoints
 
-#### Product Endpoints : /api/v1/product
+#### Product Endpoints : /api/v2/product
 
 Method | Endpoint | Functionality
 --- | --- | ---
-POST | /api/v1/product | Create a product
-GET | /api/v1/product | Get all products
-GET | /api/v1/product/productId | Get a single product
+POST        | /api/v2/product                       | Create a product
+GET         | /api/v2/product                       | Get all products
+GET         | /api/v2/product/productId             | Get a single product
+PUT         | /api/v2/product/productId             | Edit a single product
+Delete      | /api/v2/product/productId             | Delete a product
 
-#### Sales Endpoints : /api/v1/sales
+#### Sales Endpoints : /api/v2/sales
 
 Method | Endpoint | Functionality
 --- | --- | ---
-POST | /api/v1/sales | Create a sales order
-GET | /api/v1/sales | Get all sales orders
-GET | /api/v1/sales/salesId | Get a single sales order
+POST            | /api/v2/sales             | Create a sales order
+GET             | /api/v2/sales             | Get all sales orders
+GET             | /api/v2/sales/salesId     | Get a single sales order
+Delete          | /api/v2/sales/saleId      | Delete a sales record
 
 #### User Authentication endpoints
 
 Method | Endpoint | Functionality
 --- | --- | ---
-POST | /auth/register | Register a User
-POST | /auth/login | Login a user
+POST                | /api/v2/auth/register         | Register a User
+POST                | /api/v2/auth/login            | Login a user
+POST                | /api/v2/auth/logout           | Logout a user
+
+#### Category Endpoints : /api/v2/category
+
+Method | Endpoint | Functionality
+--- | --- | ---
+POST        | /api/v2/category                        | Create a category
+GET         | /api/v2/category                        | Get all categories
+GET         | /api/v2/category/categoryId             | Get a single category
+PUT         | /api/v2/category/categoryId             | Edit a single category
+Delete      | /api/v2/category/categoryId             | Delete a category
