@@ -103,7 +103,6 @@ class TestCategory(BaseTest):
                                                 data=json.dumps({"category_name": "Eggnog",
                                                     "category_description": "tech related gadgets"}))
         edit_category_result = json.loads(edit_single_category.data)
-        print(edit_category_result)
         self.assertEqual(edit_single_category.status_code, 200)
         self.assertEqual(edit_category_result['message'], 'success')
 

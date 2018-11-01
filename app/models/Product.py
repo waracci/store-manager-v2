@@ -122,9 +122,9 @@ class Product():
         """Class method to delete products from inventory"""
         self.cursor.execute("SELECT * FROM products WHERE id = (%s);", (productId,))
         del_product = self.cursor.fetchone()
-        self.cursor.execute("DELETE FROM products WHERE id = (%s);", (productId,))
         if not del_product:
             return 'product id {} not found'.format(productId)
+        self.cursor.execute("DELETE FROM products WHERE id = (%s);", (productId,))
         self.connection.commit()
         self.connection.close()
         return 'success'

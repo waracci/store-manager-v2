@@ -26,11 +26,12 @@ class TestSales(BaseTest):
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
-        sales_posted = self.client().post('/api/v2/products/1',
+        sales_posted = self.client().post('/api/v2/sales',
                                     content_type="application/json",
                                     headers=dict(Authorization="Bearer {}".format(authentication_token)),
                                     data=json.dumps({
-                                                    "product_quantity": 1
+                                                    "product_quantity": 1,
+                                                    "product_id": 1
                                                     }))
         result = json.loads(sales_posted.data.decode())
         self.assertEqual(result['status'], 'ok')
@@ -55,11 +56,12 @@ class TestSales(BaseTest):
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
 
-        sell_posted_product = self.client().post('/api/v2/products/1',
+        sell_posted_product = self.client().post('/api/v2/sales',
                                     content_type="application/json",
                                     headers=dict(Authorization="Bearer {}".format(authentication_token)),
                                     data=json.dumps({
-                                                    "product_quantity": 1
+                                                    "product_quantity": 1,
+                                                    "product_id": 1
                                                     }))
         result = json.loads(sell_posted_product.data.decode())
         self.assertEqual(result['status'], 'ok')
@@ -90,11 +92,12 @@ class TestSales(BaseTest):
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
-        sales_posted = self.client().post('/api/v2/products/1',
+        sales_posted = self.client().post('/api/v2/sales',
                                     content_type="application/json",
                                     headers=dict(Authorization="Bearer {}".format(authentication_token)),
                                     data=json.dumps({
-                                                    "product_quantity": 1
+                                                    "product_quantity": 1,
+                                                    "product_id": 1
                                                     }))
         result = json.loads(sales_posted.data.decode())
         self.assertEqual(result['status'], 'ok')
@@ -123,11 +126,12 @@ class TestSales(BaseTest):
         result = json.loads(product_posted.data.decode())
         self.assertEqual(result['message'], 'Product cake added to inventory')
         self.assertEqual(product_posted.status_code, 201)
-        sales_posted = self.client().post('/api/v2/products/1',
+        sales_posted = self.client().post('/api/v2/sales',
                                     content_type="application/json",
                                     headers=dict(Authorization="Bearer {}".format(authentication_token)),
                                     data=json.dumps({
-                                                    "product_quantity": 1
+                                                    "product_quantity": 1,
+                                                    "product_id": 1
                                                     }))
         result = json.loads(sales_posted.data.decode())
         self.assertEqual(result['status'], 'ok')

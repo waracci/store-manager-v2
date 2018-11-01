@@ -95,7 +95,7 @@ class Sales:
             self.custom_cursor.execute("SELECT * FROM sales WHERE id = (%s);", (salesId,))
             existing_sales = self.custom_cursor.fetchall()
             self.connection.close()
-            if existing_sales[3] == get_jwt_identity():
+            if existing_sales[0][5] == get_jwt_identity():
                 sale_record = []
                 for row in existing_sales:
                     sale_record.append(dict(row))
