@@ -24,7 +24,8 @@ class ProductDataTransferObject():
     })
 
     product_sale_model = product_namespace.model('product model', {
-        'product_quantity': fields.Integer(description='product stock quantity')
+        'product_quantity': fields.Integer(description='product stock quantity'),
+        'product_id': fields.Integer(description='product id')
     })
 
 class SalesDataTransferObject():

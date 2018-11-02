@@ -106,7 +106,11 @@ class Product():
         check_existing_product = self.cursor.fetchone()
         if not check_existing_product:
             return dict(message="product not found", status="failed"), 404
-        # product_name = 
+        self.cursor.execute("SELECT * FROM products WHERE name = (%s);", (product_name,))
+        existing_product = self.cursor.fetchone()
+        if existing_product:
+            self.connection.close()
+            return dict(exists=True)
         date_modified = datetime.now()
         put_sql = """UPDATE products SET name = %s,
                      description = %s, price=%s, quantity = %s,

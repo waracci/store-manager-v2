@@ -37,11 +37,23 @@ class ProductEndpoint(Resource):
         """Add a product to inventory"""
         args = parser.parse_args()
         name = (args['product_name']).strip()
+        if name == "":
+            return dict(message="product name cant be null"), 400
+        if not name:
+            return dict(message="product name missing"), 400
         description = args['product_description']
+        if not description:
+            return dict(message="product description missing"), 400
         price = args['product_price']
+        if not price:
+            return dict(message="product price missing"), 400
         quantity = args['product_quantity']
+        if not quantity:
+            return dict(message="product quantity missing"), 400
         category = args['product_category']
         minorder = args['product_minorder']
+        if not minorder:
+            return dict(message="product minimum order quantity missing"), 400
         if int(price) < 0 or int(quantity) < 0 or int(minorder) < 0:
             return dict(message="item quantities cannot be zero", status="failed"), 400
 
@@ -90,13 +102,10 @@ class GetSingleProduct(Resource):
     def put(self, productId):
         existing_product = Product().fetch_single_product(productId)
         if 'error' in existing_product:
-            return dict(message="not found", status="failed"), 404
+            return dict(message="product not found", status="failed"), 404
         data = request.get_json(force=True)
         product_name = (existing_product[0]['name']).lower()
         if 'product_name' in data:
-            same_name_product = Product().fetch_single_product_by_name((data['product_name']).lower())
-            if list(same_name_product)[0] != 'error':
-                return dict(message="product name exists already", status="failed"), 400
             product_name = data['product_name']
         product_description = existing_product[0]['description']
         if 'product_description' in data:
@@ -113,7 +122,9 @@ class GetSingleProduct(Resource):
         product_minorder = existing_product[0]['minorder']
         if 'product_minorder' in data:
             product_minorder = data['product_minorder']
-        Product().edit_product(productId, product_name, product_description, 
+        edited_product = Product().edit_product(productId, product_name, product_description, 
                                               product_price, product_quantity,
                                               product_category, product_minorder, get_jwt_identity())
+        if 'exists' in edited_product:
+            return dict(message="Product already exists"), 409
         return dict(message="success", status="ok"), 200
