@@ -1,7 +1,7 @@
 # Store Manager
 
-[![Build Status](https://travis-ci.com/waracci/store-manager-v2.svg?branch=master)](https://travis-ci.com/waracci/store-manager-v2)
-[![Coverage Status](https://coveralls.io/repos/github/waracci/store-manager-v2/badge.svg?branch=ft-auth-product-sales-endpoints-161431065)](https://coveralls.io/github/waracci/store-manager-v2?branch=ft-auth-product-sales-endpoints-161431065)
+[![Build Status](https://travis-ci.com/waracci/store-manager-v2.svg?branch=development)](https://travis-ci.com/waracci/store-manager-v2)
+[![Coverage Status](https://coveralls.io/repos/github/waracci/store-manager-v2/badge.svg?branch=development)](https://coveralls.io/github/waracci/store-manager-v2?branch=development)
 [![Maintainability](https://api.codeclimate.com/v1/badges/cbaff03d141b6cd93d47/maintainability)](https://codeclimate.com/github/waracci/store-manager-v2/maintainability)
 
 ## Introduction
