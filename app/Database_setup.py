@@ -15,8 +15,11 @@ class Database_Setup_Config:
             email       VARCHAR(50)    UNIQUE NOT NULL,
             password    VARCHAR(100)   NOT NULL,
             role        VARCHAR(10)    NOT NULL,
-            created_at  TIMESTAMP
+            created_at  VARCHAR(50)
         );''')
+
+        # save_user_sql = """INSERT INTO users(email, password, role, created_at)
+        #                   VALUES(%(email)s, %(password)s, %(role)s, %(created_at)s);"""
 
         # Initialize Product Table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS products(

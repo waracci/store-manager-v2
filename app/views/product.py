@@ -106,7 +106,9 @@ class GetSingleProduct(Resource):
         data = request.get_json(force=True)
         product_name = (existing_product[0]['name']).lower()
         if 'product_name' in data:
-            product_name = data['product_name']
+            product_name = (data['product_name']).strip()
+            if product_name == "":
+                return dict(message="product name cant be null"), 400
         product_description = existing_product[0]['description']
         if 'product_description' in data:
             product_description = data['product_description']

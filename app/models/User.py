@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import get_raw_jwt
 from datetime import datetime, timedelta
 import psycopg2
+import psycopg2.extras as extras
 
 from instance.config import secret_key, app_configuration
 from ..utils.database_helper import initialize_database
@@ -16,6 +17,7 @@ class User:
         """Initialize User Object with an email and password"""
         self.connection = initialize_database()
         self.cursor = self.connection.cursor()
+        self.custom_cursor = self.connection.cursor(cursor_factory=extras.DictCursor)
 
     def validate_user_password(self, password):
         """Compare the user entered password and user registered password"""
@@ -84,6 +86,19 @@ class User:
         token = get_raw_jwt()['jti']
         blacklist.add(token) 
         return dict(message="User log out success", status="ok"), 200
+
+    def retrieve_all_attendants(self):
+        """Retrieve all attendants"""
+        role = "attendant"
+        self.custom_cursor.execute("SELECT * FROM users WHERE role = (%s)", (role,))
+        attendants = self.custom_cursor.fetchall()
+        self.connection.close()
+        if not attendants:
+            return dict(error=404)
+        all_attendants = []
+        for row in attendants:
+            all_attendants.append(dict(row))
+        return all_attendants
 
 
     def __repr__(self):

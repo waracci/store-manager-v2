@@ -5,6 +5,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 from ..utils.helpers import validate_email
 from ..models.User import User
+from ..utils.admin_required import admin_required_check
 from ..utils.Validator import AuthDataTransferObject
 
 api = AuthDataTransferObject.authentication_namespace
@@ -96,3 +97,15 @@ class LogoutEndpoint(Resource):
         logout_user = User().logout_user(request.headers['Authorization'].split(" ")[1])
         return logout_user
 
+@api.route('attendants')
+class AttendantsEndpoint(Resource):
+    """Attendants EndPoints"""
+
+    @jwt_required
+    @admin_required_check
+    def get(self):
+        user = User()
+        all_attendants = user.retrieve_all_attendants()
+        if 'error' in all_attendants:
+            return dict(attendants=[], message="no attendants in store"), 404
+        return dict(attendants=all_attendants, status="ok"), 200

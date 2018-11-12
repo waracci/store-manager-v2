@@ -73,7 +73,7 @@ class Sales:
             attendant_sales = self.custom_cursor.fetchall()
             self.connection.close()
             if not attendant_sales:
-                return dict(error=401)
+                return dict(empty=401)
             for row in attendant_sales:
                 all_sales.append(dict(row))
             return all_sales
