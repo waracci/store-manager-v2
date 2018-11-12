@@ -126,5 +126,5 @@ class GetSingleProduct(Resource):
                                               product_price, product_quantity,
                                               product_category, product_minorder, get_jwt_identity())
         if 'exists' in edited_product:
-            return dict(message="Product already exists"), 409
+            return dict(message="Product already exists", status="failed"), 409
         return dict(message="success", status="ok"), 200

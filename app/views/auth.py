@@ -95,3 +95,4 @@ class LogoutEndpoint(Resource):
         """Logout user"""
         logout_user = User().logout_user(request.headers['Authorization'].split(" ")[1])
         return logout_user
+

@@ -50,7 +50,7 @@ class SalesEndpoint(Resource):
         # check for admin
         all_sales = Sales().fetch_all_sales()
         if 'empty' in all_sales:
-            return dict(message="No Sales made", status="ok"), 404
+            return dict(message="No Sales made", status="ok", sales=[]), 404
         return dict(sales=all_sales, status="ok"), 200
         
 

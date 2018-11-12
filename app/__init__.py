@@ -6,6 +6,7 @@ from datetime import timedelta
 from flask import Flask, jsonify, Blueprint
 from flask_restplus import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from instance.config import app_configuration
 from app.Database_setup import Database_Setup_Config
 from app.utils.database_helper import initialize_database
@@ -18,6 +19,7 @@ jwt = JWTManager()
 from app.models.User import blacklist
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
     app.url_map.strict_slashes = False
     app.config.from_object(app_configuration[config_name])
     app.config.from_pyfile('config.py')
