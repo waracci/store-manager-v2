@@ -74,4 +74,6 @@ class GetSingleSalesRecord(Resource):
     def delete(self, saleId):
         """Delete a single sales record"""
         del_sale = Sales().delete_sale(saleId)
+        if 'not found' in del_sale:
+            return dict(message="sale record not found", status="failed"), 404
         return dict(message=del_sale, status="ok"), 200
